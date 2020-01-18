@@ -58,12 +58,12 @@ mergeUtils.makeScheduleArr = function makeScheduleArr (userIndex, callback) {
         }
         console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId)
         let exec = conn.query(
-            '((select * from routine1view where user_index in (select friend_index from friend where user_index = ?)) union\n' +
+            '(select * from routine1view where user_index in (select friend_index from friend where user_index = ?)) union\n' +
             '(select * from routine2view where user_index in (select friend_index from friend where user_index = ?)) union\n' +
             '(select * from routine1view where user_index in (select user_index from friend where friend_index = ?)) union\n' +
             '(select * from routine2view where user_index in (select user_index from friend where friend_index = ?)) union\n' +
             '(select * from routine1view where user_index = ?) union\n' +
-            '(select * from routine2view where user_index = ?)) order by user_index asc;',[userIndex, userIndex, userIndex, userIndex, userIndex, userIndex], function (err, result) {
+            '(select * from routine2view where user_index = ?);',[userIndex, userIndex, userIndex, userIndex, userIndex, userIndex], function (err, result) {
                 conn.release()
                 console.log('실행 대상 SQL : ' + exec.sql)
 
@@ -73,12 +73,6 @@ mergeUtils.makeScheduleArr = function makeScheduleArr (userIndex, callback) {
                     callback(err, null)
                     return
                 }
-            if (result.length > 0) {
-                for (let i = 0; i < result.length; i++) {
-                    let abt = result[i]['schedule_start']
-                    let abt2 = result[i]['schedule_end']
-                }
-            }
             /*
                 if (result.length > 0) {
                     for (let i = 0; i < result.length; i++) {
