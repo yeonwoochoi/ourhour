@@ -1,7 +1,8 @@
-const pool = require('../../../../../app')
+const pool = require('../../../../../app').pool
 const checkKey = require('../../../input_key_check/key_check')
 const Response = require('../../../../response_class')
 let syncMysql = require('sync-mysql')
+
 let syncConnection = new syncMysql({
     'host': 'localhost',
     'user': 'root',
@@ -29,7 +30,7 @@ const createGroupBoard = (req, res) => {
             console.log(`요청 파라미터 : ${paramGbTitle}, ${paramGbContent}, ${paramGbImportance}, ${paramGbAuthor}, ${paramGroupCode}`)
             let array = []
             if (pool) {
-                let group_member = syncConnection.query('SELECT member_id FROM member_table WHERE group_code = ?', [paramGroupCode])
+                let group_member = syncConnection.query('SELECT member_id FROM member_table WHERE group_index= ?', [paramGroupCode])
                 let arr = []
                 let checkArray = []
                 if (group_member.length) {

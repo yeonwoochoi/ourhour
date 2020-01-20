@@ -1,4 +1,4 @@
-const pool = require('../../../../../app')
+const pool = require('../../../../../app').pool
 const Response = require('../../../../response_class')
 
 const readGroupBoardByTitle = (req, res) => {

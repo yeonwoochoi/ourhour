@@ -1,4 +1,4 @@
-const pool = require('../../../../../app')
+const pool = require('../../../../../app').pool
 const checkKey = require('../../../input_key_check/key_check')
 const Response = require('../../../../response_class')
 
