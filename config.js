@@ -232,6 +232,18 @@ module.exports = {
             type: 'post'
         },
         {
+            file: './tables/crud_function/group_crud_function/member/auth_member',
+            path: '/ourhour/member/auth',
+            method: 'authMember',
+            type: 'post'
+        },
+        {
+            file: './tables/crud_function/group_crud_function/member/read_auth_member',
+            path: '/ourhour/member/read/auth',
+            method: 'readAuthMember',
+            type: 'post'
+        },
+        {
             file: './tables/crud_function/group_crud_function/member/update_member',
             path: '/ourhour/member',
             method: 'updateMember',

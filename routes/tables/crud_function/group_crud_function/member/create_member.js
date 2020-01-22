@@ -23,18 +23,12 @@ const createMember = (req, res) => {
             } else {
                 let paramMemberIndex = paramObj['member_index']
                 let paramUserIndex = paramObj['user_index']
-                let paramMemberAccess
-                if (paramObj['member_access'] === undefined) {
-                    paramMemberAccess = 0
-                } else {
-                    paramMemberAccess = paramObj['member_access']
-                }
                 let paramGroupIndex = paramObj['gb_index']
 
-                console.log(`요청 파라미터 : ${paramMemberIndex}, ${paramUserIndex}, ${paramMemberAccess}, ${paramGroupIndex}`)
+                console.log(`요청 파라미터 : ${paramMemberIndex}, ${paramUserIndex}, ${paramGroupIndex}`)
                 let array = []
                 if (pool) {
-                    addMember(paramMemberIndex, paramUserIndex, paramMemberAccess, paramGroupIndex, function (err, result) {
+                    addMember(paramMemberIndex, paramUserIndex, paramGroupIndex, function (err, result) {
                         if (err) {
                             console.log('member 추가 중 에러 발생함')
                             let code = 500 //Internal Server Error
@@ -50,7 +44,7 @@ const createMember = (req, res) => {
                                 let code = 204 // No Content
                                 let success = 0
                                 let data = []
-                                let message = '등록되지 않은 group 입니다'
+                                let message = 'member_index 는 등록되지 않은 index 입니다'
                                 let error = err
                                 let response = new Response(code, success, null, data, message, error)
                                 res.send(response)
@@ -59,7 +53,7 @@ const createMember = (req, res) => {
                                 let code = 204 // No Content
                                 let success = 0
                                 let data = []
-                                let message = 'member_index 는 등록되지 않은 user_index 입니다'
+                                let message = 'user_index 는 등록되지 않은 index 입니다'
                                 let error = err
                                 let response = new Response(code, success, null, data, message, error)
                                 res.send(response)
@@ -68,7 +62,7 @@ const createMember = (req, res) => {
                                 let code = 204 // No Content
                                 let success = 0
                                 let data = []
-                                let message = 'user_index 는 등록되지 않은 user_index 입니다'
+                                let message = '등록되지 않은 group 입니다'
                                 let error = err
                                 let response = new Response(code, success, null, data, message, error)
                                 res.send(response)
@@ -77,7 +71,7 @@ const createMember = (req, res) => {
                                 let code = 204 // No Content
                                 let success = 0
                                 let data = []
-                                let message = 'member_index 는 group 의 member_index 가 아닙니다'
+                                let message = 'member_index 는 group 의 member 가 아닙니다'
                                 let error = err
                                 let response = new Response(code, success, null, data, message, error)
                                 res.send(response)
@@ -95,16 +89,34 @@ const createMember = (req, res) => {
                                 let code = 204 // No Content
                                 let success = 0
                                 let data = []
-                                let message = 'member_index 는 member 를 추가할 권한이 없습니다'
+                                let message = '인증 중입니다'
                                 let error = err
                                 let response = new Response(code, success, null, data, message, error)
                                 res.send(response)
                             } else if (result[0]['run'] === 6) {
                                 console.dir(result)
+                                let code = 204 // No Content
+                                let success = 0
+                                let data = []
+                                let message = 'user_index 와 member_index 는 친구가 아닙니다 '
+                                let error = err
+                                let response = new Response(code, success, null, data, message, error)
+                                res.send(response)
+                            } else if (result[0]['run'] === 7) {
+                                console.dir(result)
+                                let code = 204 // No Content
+                                let success = 0
+                                let data = []
+                                let message = 'member_index 는 member 를 추가할 권한이 없습니다'
+                                let error = err
+                                let response = new Response(code, success, null, data, message, error)
+                                res.send(response)
+                            } else if (result[0]['run'] === 8) {
+                                console.dir(result)
                                 let code = 201 //Created
                                 let success = 1
                                 let data = []
-                                let message = 'member 추가 성공.'
+                                let message = '해당 user 에게 group member 요청을 보냈습니다.'
                                 let error = err
                                 let response = new Response(code, success, null, data, message, error)
                                 res.send(response)
@@ -154,7 +166,7 @@ const createMember = (req, res) => {
 
 
 
-const addMember = (memberIndex, userIndex, access, groupIndex, callback) => {
+const addMember = (memberIndex, userIndex, groupIndex, callback) => {
     console.log(`addMember 호출됨.`)
     pool.getConnection(function (err, conn) {
         if(err) {
@@ -165,7 +177,7 @@ const addMember = (memberIndex, userIndex, access, groupIndex, callback) => {
             return
         }
         console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId)
-        let exec = conn.query(`select addMember(?, ?, ?, ?) as run`, [memberIndex, userIndex, groupIndex, access] , function(err, result) {
+        let exec = conn.query(`select inviteMember(?, ?, ?) as run`, [memberIndex, userIndex, groupIndex] , function(err, result) {
             conn.release()
             console.log('실행 대상 SQL : ' + exec.sql)
 
