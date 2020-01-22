@@ -244,9 +244,15 @@ module.exports = {
             type: 'post'
         },
         {
-            file: './merge_schedule/merge',
-            path: '/ourhour/merge',
-            method: 'merge',
+            file: './merge_schedule/merge1',
+            path: '/ourhour/merge1',
+            method: 'merge1',
+            type: 'post'
+        },
+        {
+            file: './merge_schedule/merge2',
+            path: '/ourhour/merge2',
+            method: 'merge2',
             type: 'post'
         },
         {

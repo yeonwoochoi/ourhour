@@ -47,7 +47,7 @@ mergeUtils.stringToDate = function stringToDate (inputStr) {
 }
 
 
-mergeUtils.makeScheduleArr = function makeScheduleArr (userIndex, callback) {
+mergeUtils.makeScheduleArr = function makeScheduleArr (gbIndex, callback) {
     pool.getConnection(function (err, conn) {
         if(err) {
             if (conn) {
@@ -58,12 +58,8 @@ mergeUtils.makeScheduleArr = function makeScheduleArr (userIndex, callback) {
         }
         console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId)
         let exec = conn.query(
-            '(select * from routine1view where user_index in (select friend_index from friend where user_index = ?)) union\n' +
-            '(select * from routine2view where user_index in (select friend_index from friend where user_index = ?)) union\n' +
-            '(select * from routine1view where user_index in (select user_index from friend where friend_index = ?)) union\n' +
-            '(select * from routine2view where user_index in (select user_index from friend where friend_index = ?)) union\n' +
-            '(select * from routine1view where user_index = ?) union\n' +
-            '(select * from routine2view where user_index = ?);',[userIndex, userIndex, userIndex, userIndex, userIndex, userIndex], function (err, result) {
+            'select * from routine1view where user_index in (select member_index as user_index from groupview where gb_index = ?) union\n' +
+            'select * from routine2view where user_index in (select member_index as user_index from groupview where gb_index = ?)',[gbIndex, gbIndex], function (err, result) {
                 conn.release()
                 console.log('실행 대상 SQL : ' + exec.sql)
 
@@ -98,6 +94,35 @@ mergeUtils.makeScheduleArr = function makeScheduleArr (userIndex, callback) {
     })
 }
 
+mergeUtils.makeScheduleArr2 = function (userIndex, friendIndex, callback) {
+    pool.getConnection(function (err, conn) {
+        if(err) {
+            if (conn) {
+                conn.release()
+            }
+            callback(err, null)
+            return
+        }
+        console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId)
+        let exec = conn.query(
+            'select * from routine1view where user_index = ? union\n' +
+            'select * from routine2view where user_index = ? union\n' +
+            'select * from routine1view where user_index = ? union\n' +
+            'select * from routine2view where user_index = ?',[userIndex, userIndex, friendIndex, friendIndex], function (err, result) {
+                conn.release()
+                console.log('실행 대상 SQL : ' + exec.sql)
+
+                if (err) {
+                    console.log('SQL 실행 시 오류 발생함.')
+                    console.dir(err)
+                    callback(err, null)
+                    return
+                }
+
+                callback(null, result)
+            })
+    })
+}
 
 mergeUtils.addDate = function addDate (date, number) {
     if (typeof date === 'object') {

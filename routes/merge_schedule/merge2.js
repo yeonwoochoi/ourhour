@@ -4,8 +4,8 @@ const Response = require('../../routes/response_class')
 const mergeUtils = require('./merge_utils').mergeUtils
 
 
-const merge = (req, res) => {
-    console.log(`merge 호출됨`);
+const merge2 = (req, res) => {
+    console.log(`merge2 호출됨`);
     if (req.authenticated === true) {
         console.log(`token 있음`);
         let checkArr = checkKey(req.body, 'merge')
@@ -22,9 +22,10 @@ const merge = (req, res) => {
             // let groupName = req.body.group_name;
             let dateTime = req.body['date']
             let userIndex = req.body['user_index'];
-            console.log(`요청 파라미터 : ${dateTime}, ${userIndex}`)
+            let friendIndex = req.body['friend_index'];
+            console.log(`요청 파라미터 : ${dateTime}, ${userIndex}, ${friendIndex}`)
             if (pool) {
-                mergeSchedule(dateTime, userIndex, function (err, result) {
+                mergeSchedule2(dateTime, userIndex, friendIndex, function (err, result) {
                     console.log(`mergeSchedule 실행됨`);
                     if (err) {
                         console.log('merge 중 에러 발생함')
@@ -79,8 +80,8 @@ const merge = (req, res) => {
 }
 
 
-const mergeSchedule = (date, userIndex, callback) => {
-    console.log(`mergeSchedule 호출됨.`);
+const mergeSchedule2 = (date, userIndex, friendIndex, callback) => {
+    console.log(`mergeSchedule2 호출됨.`);
     if (typeof date === 'string') {
         date = mergeUtils.stringToDate(date)
     }
@@ -89,7 +90,7 @@ const mergeSchedule = (date, userIndex, callback) => {
     let end = dateArr[1]
     let scheduleArr
     let scheduleArr2
-    mergeUtils.makeScheduleArr(userIndex, function (err, result) {
+    mergeUtils.makeScheduleArr2(userIndex, friendIndex, function (err, result) {
         if (err) {
             callback(err, null)
         } else {
@@ -199,4 +200,4 @@ const mergeSchedule = (date, userIndex, callback) => {
     })
 }
 
-module.exports.merge = merge
+module.exports.merge2 = merge2

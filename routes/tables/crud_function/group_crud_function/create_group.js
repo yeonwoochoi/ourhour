@@ -19,15 +19,13 @@ const createGroup = (req, res) => {
             res.send(response)
         } else {
             let paramGroupName = paramObj['gb_name']
-            let paramGroupStart = paramObj['gb_start']
-            let paramGroupEnd = paramObj['gb_end']
             let paramGroupAccess = paramObj['gb_access']
             let paramUserOwnerId = paramObj['owner_index']
 
-            console.log(`요청 파라미터 : ${paramGroupName}, ${paramGroupStart}, ${paramGroupEnd}, ${paramGroupAccess}, ${paramUserOwnerId}`)
+            console.log(`요청 파라미터 : ${paramGroupName}, ${paramGroupAccess}, ${paramUserOwnerId}`)
             let array = []
             if (pool) {
-                addGroup(paramGroupName, paramGroupStart, paramGroupEnd, paramGroupAccess, paramUserOwnerId, function (err, result) {
+                addGroup(paramGroupName, paramGroupAccess, paramUserOwnerId, function (err, result) {
                     if (err) {
                         console.log('group 추가 중 에러 발생함')
                         let code = 500 //Internal Server Error
@@ -114,7 +112,7 @@ const createGroup = (req, res) => {
 
 
 
-const addGroup = (name, start, end, access, userIndex, callback) => {
+const addGroup = (name, access, userIndex, callback) => {
     console.log(`addGroup 호출됨.`)
     pool.getConnection(function (err, conn) {
         if(err) {
@@ -126,7 +124,7 @@ const addGroup = (name, start, end, access, userIndex, callback) => {
         }
         console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId)
         //let nowdate = new Date().toISOString().replace(/T..+/, '')
-        let exec = conn.query('select createGroup (?, ?, ?, ?, ?) as gb_index', [name, start, end, access, userIndex],function(err, result) {
+        let exec = conn.query('select createGroup (?, ?, ?) as gb_index', [name, access, userIndex],function(err, result) {
             conn.release()
             console.log('실행 대상 SQL : ' + exec.sql)
 
