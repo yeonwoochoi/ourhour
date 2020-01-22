@@ -1,14 +1,14 @@
-const pool = require('../../../../../app').pool
-const checkKey = require('../../../input_key_check/key_check')
-const Response = require('../../../../response_class')
+const pool = require('../../../../app').pool
+const checkKey = require('../../input_key_check/key_check')
+const Response = require('../../../response_class')
 
 
-const readGroupBoard = (req, res) => {
-    console.log(`readGroupBoard 호출됨.`)
+const readAllGroup = (req, res) => {
+    console.log(`readAllGroup 호출됨.`)
     if(req.authenticated === true) {
         console.log('token 있음')
         let paramObj = req.body
-        let checkArr = checkKey(paramObj, 'group_board_column')
+        let checkArr = checkKey(paramObj, 'group_column')
         if (checkArr[0] === 0) {
             console.log('key value error')
             let code = 400; //Bad Request
@@ -19,17 +19,17 @@ const readGroupBoard = (req, res) => {
             let response = new Response(code, success, null, data, message, error)
             res.send(response)
         } else {
-            let paramGbIndex = paramObj['gb_index']
+            let paramUserOwnerId = paramObj['user_index']
 
-            console.log(`요청 파라미터 : ${paramGbIndex}`)
+            console.log(`요청 파라미터 : ${paramUserOwnerId}`)
             if (pool) {
-                findGroupBoard (paramGbIndex, function(err, result) {
+                findGroup (paramUserOwnerId, function(err, result) {
                     if (err) {
-                        console.log('group board 검색 중 에러 발생.')
+                        console.log('group 검색 중 에러 발생.')
                         let code = 500 //Internal Server Error
                         let success = 0
                         let data = []
-                        let message = 'group board 검색 중 error 발생함.'
+                        let message = 'group 검색 중 error 발생함.'
                         let error = err
                         let response = new Response(code, success, null, data, message, error)
                         res.send(response)
@@ -38,7 +38,7 @@ const readGroupBoard = (req, res) => {
                         let code = 200 //OK
                         let success = 1
                         let data = result
-                        let message = 'group board 검색 성공.'
+                        let message = 'group 검색 성공.'
                         let error = err
                         let response = new Response(code, success, null, data, message, error)
                         res.send(response)
@@ -77,8 +77,9 @@ const readGroupBoard = (req, res) => {
     }
 }
 
-const findGroupBoard = (index, callback) => {
-    console.log(`findGroupBoard 호출됨.`)
+const findGroup = (userIndex, callback) => {
+    console.log(`findGroup 호출됨.`)
+
     pool.getConnection(function (err, conn) {
         if (err) {
             if (conn) {
@@ -88,7 +89,7 @@ const findGroupBoard = (index, callback) => {
             return
         }
         console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId)
-        let exec = conn.query('select * from groupboardview where gb_index = ?', [index] , function (err, result) {
+        let exec = conn.query('select * from groupview where gb_index in (select gb_index from mydb.member_table where member_index = ?)', [userIndex] , function (err, result) {
             conn.release()
             console.log('실행 대상 SQL : ' + exec.sql)
 
@@ -103,5 +104,4 @@ const findGroupBoard = (index, callback) => {
     })
 }
 
-module.exports.readGroupBoard = readGroupBoard
-
+module.exports.readAllGroup = readAllGroup

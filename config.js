@@ -154,6 +154,12 @@ module.exports = {
             type: 'post'
         },
         {
+            file: './tables/crud_function/group_crud_function/read_all_group',
+            path: '/ourhour/group/read-all',
+            method: 'readAllGroup',
+            type: 'post'
+        },
+        {
             file: './tables/crud_function/group_crud_function/update_group',
             path: '/ourhour/group',
             method: 'updateGroup',
@@ -170,24 +176,6 @@ module.exports = {
             path: '/ourhour/groupboard',
             method: 'createGroupBoard',
             type: 'post'
-        },
-        {
-            file: './tables/crud_function/group_crud_function/group_board/read_all_group_board',
-            path: '/ourhour/groupboard',
-            method: 'readAllGroupBoard',
-            type: 'get'
-        },
-        {
-            file: './tables/crud_function/group_crud_function/group_board/read_group_board_by_author_id',
-            path: '/ourhour/groupboard/id/:id',
-            method: 'readGroupBoardById',
-            type: 'get'
-        },
-        {
-            file: './tables/crud_function/group_crud_function/group_board/read_group_board_by_group_title',
-            path: '/ourhour/groupboard/title/:title',
-            method: 'readGroupBoardByTitle',
-            type: 'get'
         },
         {
             file: './tables/crud_function/group_crud_function/group_board/read_group_board',

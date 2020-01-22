@@ -6,67 +6,128 @@ const Response = require('../../../../response_class')
 const deleteGroupBoard = (req, res) => {
     console.log(`deleteGroupBoard 호출됨.`)
     if (req.authenticated === true) {
-        console.log(`token 있음`)
-        let paramObj = req.body.data
+        console.log('token 있음')
+        let paramObj = req.body
         let checkArr = checkKey(paramObj, 'group_board_column')
         if (checkArr[0] === 0) {
-            let response = new Response('key value error', [], checkArr[1])
+            console.log('key value error')
+            let code = 400; //Bad Request
+            let success = 0
+            let data = []
+            let message = 'check your key value of your request body again.'
+            let error = null
+            let response = new Response(code, success, null, data, message, error)
             res.send(response)
         } else {
-            let paramGbTitle = paramObj['gb_title']
-            let paramGbContent = paramObj['gb_content']
-            let paramGbImportance = paramObj['gb_importance']
-            let paramGbCreatedAt = paramObj['gb_created_at']
-            let paramGbUpdatedAt = paramObj['gb_updated_at']
-            let paramGbAuthor = paramObj['gb_author']
-            let paramGbCode = paramObj['gb_code']
-            let paramGroupCode = paramObj['group_code']
+            let paramUserIndex = paramObj['user_index']
+            let paramGroupIndex = paramObj['gb_board_index']
 
-            let newObj = {
-                "gb_title": paramGbTitle,
-                "gb_content": paramGbContent,
-                "gb_importance": paramGbImportance,
-                "gb_created_at": paramGbCreatedAt,
-                "gb_updated_at": paramGbUpdatedAt,
-                "gb_author": paramGbAuthor,
-                "gb_code" : paramGbCode,
-                "group_code" : paramGroupCode
-            }
 
-            console.log(`요청 파라미터 : ${paramGbTitle}, ${paramGbContent}, ${paramGbImportance}, ${paramGbCreatedAt}, ${paramGbUpdatedAt}, ${paramGbAuthor}, ${paramGbCode}, ${paramGroupCode}`)
+            console.log(`요청 파라미터 : ${paramGroupIndex}, ${paramUserIndex}`)
             let array = []
             if (pool) {
-                deleteGroupBoardList(newObj, function (err, result) {
+                deleteGroupBoardList(paramUserIndex, paramGroupIndex, function (err, result) {
                     if (err) {
-                        console.log('group board 삭제 중 에러 발생함.')
-                        let response = new Response('group board 삭제 중 에러 발생함.', array, err)
+                        console.log('group 삭제 중 에러 발생함.')
+                        let code = 500; //Internal Server Error
+                        let success = 0
+                        let data = array
+                        let message = 'group 삭제 중 error 발생함.'
+                        let error = err
+                        let response = new Response(code, success, null, data, message, error)
                         res.send(response)
-                        return
                     }
                     if (result) {
-                        console.dir(result)
-                        array.push(result)
-                        let response = new Response('group board 삭제 성공', array, null)
-                        res.send(response)
+                        if (result[0]['run'] === 0) {
+                            console.dir(result)
+                            let code = 204 // No Content
+                            let success = 0
+                            let data = []
+                            let message = '등록되지 않은 user 입니다'
+                            let error = err
+                            let response = new Response(code, success, null, data, message, error)
+                            res.send(response)
+                        } else if (result[0]['run'] === 1) {
+                            console.dir(result)
+                            let code = 204 // No Content
+                            let success = 0
+                            let data = []
+                            let message = '등록되지 않은 group board 입니다'
+                            let error = err
+                            let response = new Response(code, success, null, data, message, error)
+                            res.send(response)
+                        } else if (result[0]['run'] === 2) {
+                            console.dir(result)
+                            let code = 204 // No Content
+                            let success = 0
+                            let data = []
+                            let message = '해당 group 에 소속된 user 가 아닙니다'
+                            let error = err
+                            let response = new Response(code, success, null, data, message, error)
+                            res.send(response)
+                        } else if (result[0]['run'] === 3) {
+                            console.dir(result)
+                            let code = 204 // No Content
+                            let success = 0
+                            let data = []
+                            let message = '본인 혹은 해당 group 소속의 권한이 있는 user 만 group board 를 삭제할 권한이 있습니다'
+                            let error = err
+                            let response = new Response(code, success, null, data, message, error)
+                            res.send(response)
+                        } else if (result[0]['run'] === 4) {
+                            console.dir(result)
+                            let code = 200 //OK
+                            let success = 1
+                            let data = []
+                            let message = 'group board 삭제 성공.'
+                            let error = err
+                            let response = new Response(code, success, null, data, message, error)
+                            res.send(response)
+                        } else {
+                            console.dir(result)
+                            let code = 204 // No Content
+                            let success = 0
+                            let data = result
+                            let message = 'No response data'
+                            let error = err
+                            let response = new Response(code, success, null, data, message, error)
+                            res.send(response)
+                        }
                     } else {
-                        array.push(result)
-                        let response = new Response('group board 삭제 실패', array, null)
+                        console.dir(result)
+                        let code = 204 // No Content
+                        let success = 0
+                        let data = result
+                        let message = 'No response data'
+                        let error = err
+                        let response = new Response(code, success, null, data, message, error)
                         res.send(response)
                     }
                 })
             } else {
-                let response = new Response('데이터베이스 연결 안됨.', array, null)
+                console.log(`데이터베이스 연결 안됨.`)
+                let code = 500; //Internal Server Error
+                let success = 0
+                let data = []
+                let message = '데이터베이스 연결 안됨.'
+                let error = null
+                let response = new Response(code, success, null, data, message, error)
                 res.send(response)
             }
         }
     } else {
-        console.log('token 없음')
-        let response = new Response('There is no token', [], null)
+        console.log('token 없음 ')
+        let code = 401; // Unauthorized
+        let success = 0
+        let data = []
+        let message = 'request Header에 token 없음'
+        let error = null
+        let response = new Response(code, success, null, data, message, error)
         res.send(response)
     }
 }
 
-const deleteGroupBoardList = (obj, callback) => {
+const deleteGroupBoardList = (userIndex, gbBoardIndex, callback) => {
     console.log(`deleteGroupBoardList 호출됨.`)
     pool.getConnection(function (err, conn) {
         if (err) {
@@ -77,26 +138,8 @@ const deleteGroupBoardList = (obj, callback) => {
             return
         }
         console.log('데이터베이스 연결 스레드 아이디: ' + conn.threadId)
-        let checkKeyArray = Object.keys(obj)
-        let checkValueArray = Object.values(obj)
-        for (let i = 0; i < checkKeyArray.length; i++) {
-            if (checkValueArray[i] === undefined) {
-                delete obj[checkKeyArray[i]]
-            }
-        }
-        let newKeyArray = Object.keys(obj)
-        let newValueArray = Object.values(obj)
-        let string = ''
-        if (newKeyArray.length === 1) {
-            string += (newKeyArray[0] + ' = ' + "'" + newValueArray[0] + "'")
-        } else {
-            for (let i = 0; i < newKeyArray.length - 1; i++) {
-                string += (newKeyArray[i] + ' = ' + "'" + newValueArray[i] + "'" + " and ")
-            }
-            string += (newKeyArray[newKeyArray.length - 1] + ' = ' + "'" + newValueArray[newValueArray.length - 1] + "'")
-        }
 
-        let exec = conn.query('delete from group_board where ' + string, function (err, results) {
+        let exec = conn.query('select deleteGroupBoard (?, ?) as run', [userIndex, gbBoardIndex], function (err, results) {
             conn.release()
             console.log('실행 대상 SQL : ' + exec.sql)
             if (err) {

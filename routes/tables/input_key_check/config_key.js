@@ -9,7 +9,7 @@ module.exports = {
     'group_column' : ['gb_index', 'gb_name', 'gb_start', 'gb_end', 'gb_created_at', 'gb_updated_at', 'gb_access' , 'owner_index', 'user_index'],
     'group_column1' : ['gb_index', 'gb_name', 'user_index'],
     'group_column2' : ['gb_name', 'gb_start', 'gb_end', 'gb_created_at', 'gb_updated_at', 'gb_access'],
-    'group_board_column' : ['gb_index', 'gb_title', 'gb_content', 'gb_importance', 'gb_created_at', 'gb_updated_at', 'gb_author', 'group_index'],
+    'group_board_column' : ['gb_board_index', 'gb_board_title', 'gb_board_content', 'gb_board_importance', 'gb_board_created_at', 'gb_board_updated_at', 'gb_board_author', 'gb_index', 'user_index', 'newObj'],
     'member_column' : ['member_index', 'member_access', 'gb_index', 'user_index'],
     'merge' : ['date', 'user_index']
 }

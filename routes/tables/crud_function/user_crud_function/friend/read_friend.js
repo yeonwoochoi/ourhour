@@ -86,7 +86,8 @@ const findFriend = (user, callback) => {
             return
         }
         console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId)
-        let exec = conn.query('select user_index as friend_index from friend where friend_index = ? union select friend_index from friend where user_index = ?', [user, user] , function (err, result) {
+        let exec = conn.query('select user_index as friend_index, friend_name from friendview1 where friend_index = ? union\n' +
+            'select friend_index, friend_name from friendview2 where user_index = ?', [user, user] , function (err, result) {
             conn.release()
             console.log('실행 대상 SQL : ' + exec.sql)
 

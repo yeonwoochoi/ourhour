@@ -86,8 +86,7 @@ const findAuthFriend = (user, callback) => {
             return
         }
         console.log('데이터베이스 연결 스레드 아이디 : ' + conn.threadId)
-        let exec = conn.query('((select user_index as friend_index from auth_friend where friend_index = ?) union\n' +
-            '(select friend_index from auth_friend where user_index = ?)) order by friend_index asc', [user, user] , function (err, result) {
+        let exec = conn.query('select user_index, user_name, message from friendauthview where friend_index = ?', [user] , function (err, result) {
             conn.release()
             console.log('실행 대상 SQL : ' + exec.sql)
 
