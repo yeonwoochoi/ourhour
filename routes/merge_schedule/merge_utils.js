@@ -139,9 +139,8 @@ mergeUtils.rangeSetting = function rangeSetting (date) {
         date = mergeUtils.stringToDate(date)
     }
     let day = date.getDay()
-    let day2 = date.getDay()
     let start = mergeUtils.addDate(date, day * (-1))
-    let end = mergeUtils.addDate(date, (7-day2))
+    let end = mergeUtils.addDate(date, (6))
 
     let startArr = [start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0]
     let endArr = [end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59]
