@@ -151,8 +151,8 @@ mergeUtils.rangeSetting = function rangeSetting (date) {
     let newStart = new Date(startArr[0], startArr[1], startArr[2], startArr[3], startArr[4], startArr[5])
     let newEnd = new Date(endArr[0], endArr[1], endArr[2], endArr[3], endArr[4], endArr[5])
 
-    //newStart.setHours(newStart.getHours())// 추가해
-    // newEnd.setHours(newEnd.getHours())// 추가해
+    newStart.setHours(newStart.getHours() + 9)// 추가해
+     newEnd.setHours(newEnd.getHours() + 9)// 추가해
 
     return [newStart, newEnd]
 }
