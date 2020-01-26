@@ -1,6 +1,9 @@
 const changeDateType = (inputStr) => {
     let newStr
+    /*
     inputStr = new Date(inputStr.setHours(inputStr.getHours() + 9))
+    
+     */
     if (typeof (inputStr) === 'object' ) {
         newStr = inputStr.toISOString().replace(/T/, ' ').replace(/\..+/, '')
     } else {
