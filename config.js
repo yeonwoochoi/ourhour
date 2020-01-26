@@ -220,6 +220,12 @@ module.exports = {
             type: 'post'
         },
         {
+            file: './tables/crud_function/user_crud_function/friend/delete_auth_friend',
+            path: '/ourhour/friend/delete/auth',
+            method: 'deleteAuthFriend',
+            type: 'post'
+        },
+        {
             file: './tables/crud_function/user_crud_function/friend/delete_friend',
             path: '/ourhour/friend/deletion',
             method: 'deleteFriend',
@@ -241,6 +247,12 @@ module.exports = {
             file: './tables/crud_function/group_crud_function/member/read_auth_member',
             path: '/ourhour/member/read/auth',
             method: 'readAuthMember',
+            type: 'post'
+        },
+        {
+            file: './tables/crud_function/group_crud_function/member/delete_auth_member',
+            path: '/ourhour/member/delete/auth',
+            method: 'deleteAuthMember',
             type: 'post'
         },
         {
