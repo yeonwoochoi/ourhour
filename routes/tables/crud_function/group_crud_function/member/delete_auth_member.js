@@ -34,7 +34,7 @@ const deleteAuthMember = (req, res) => {
                         let error = err
                         let response = new Response(code, success, null, data, message, error)
                         res.send(response)
-                    } else if (result) {
+                    } else if (result.affectedRows > 0) {
                         console.dir(result)
                         arr.push(result)
                         let code = 200 //OK
