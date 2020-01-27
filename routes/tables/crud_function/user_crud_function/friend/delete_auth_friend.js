@@ -22,6 +22,7 @@ const deleteAuthFriend = (req, res) => {
             let paramUserIndex = paramObj['user_index']
             let paramFriendIndex = paramObj['friend_index']
             console.log(`요청 파라미터 : ${paramUserIndex}, ${paramFriendIndex}`);
+            let arr = []
             if (pool) {
                 deleteAuthFriendList (paramUserIndex, paramFriendIndex, function(err, result) {
                     if (err) {
@@ -35,9 +36,10 @@ const deleteAuthFriend = (req, res) => {
                         res.send(response)
                     } else if (result) {
                         console.dir(result)
+                        arr.push(result)
                         let code = 200 //OK
                         let success = 1
-                        let data = result
+                        let data = arr
                         let message = 'friend 요청 인증 목록 삭제 성공.'
                         let error = err
                         let response = new Response(code, success, null, data, message, error)

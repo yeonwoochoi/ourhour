@@ -22,6 +22,7 @@ const deleteAuthMember = (req, res) => {
             let paramUserIndex = paramObj['user_index']
             let paramGbIndex = paramObj['gb_index']
             console.log(`요청 파라미터 : ${paramUserIndex}, ${paramGbIndex}`);
+            let arr = []
             if (pool) {
                 deleteAuthMemberList (paramUserIndex, paramGbIndex, function(err, result) {
                     if (err) {
@@ -35,9 +36,10 @@ const deleteAuthMember = (req, res) => {
                         res.send(response)
                     } else if (result) {
                         console.dir(result)
+                        arr.push(result)
                         let code = 200 //OK
                         let success = 1
-                        let data = result
+                        let data = arr
                         let message = 'member 요청 인증 목록 삭제 성공.'
                         let error = err
                         let response = new Response(code, success, null, data, message, error)
